@@ -1,5 +1,5 @@
 import os
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+#os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 import torch
 import numpy as np
 from torch.utils.data import DataLoader
@@ -54,10 +54,10 @@ SSIM_ODPS_autodiff = np.zeros([n_recon, 3, len(t_prime_list), len(step_odps_list
 #PSNR_OneStepLBFGS = np.zeros([n_recon, 3, len(beta_onestepLBFGS_list), len(gamma_onestepLBFGS_list)])
 #SSIM_OneStepLBFGS = np.zeros([n_recon, 3, len(beta_onestepLBFGS_list), len(gamma_onestepLBFGS_list)])
 
-PSNR_ProjDomainDPS = np.zeros(
-    [n_recon, 3, len(t_prime_list), len(beta_ProjDomainDPS_list), len(step_ProjDomainDPS_list)])
-SSIM_ProjDomainDPS = np.zeros(
-    [n_recon, 3, len(t_prime_list), len(beta_ProjDomainDPS_list), len(step_ProjDomainDPS_list)])
+#PSNR_ProjDomainDPS = np.zeros(
+#    [n_recon, 3, len(t_prime_list), len(beta_ProjDomainDPS_list), len(step_ProjDomainDPS_list)])
+#SSIM_ProjDomainDPS = np.zeros(
+#    [n_recon, 3, len(t_prime_list), len(beta_ProjDomainDPS_list), len(step_ProjDomainDPS_list)])
 
 my_transforms = transforms.Compose(
     [transforms.ToTensor(),
@@ -161,20 +161,20 @@ for n_rec in range(n_recon):
           #  ax[2].axis('off')
           #  plt.show()
             # ODPS autodiff
-        #    grad_approx = False
+            grad_approx = False
            # start = time.time()
-        #    x_odps_autodiff, PSNR_odps_autodiff, SSIM_odps_autodiff = ODPS_method(Mat, Spect, Measures, ODPS,
-        #                                                                          x_scout=x_scout,
-        #                                                                          t_prime=t_prime_list[t_prime],
-        #                                                                          step=torch.tensor(
-        #                                                                              [step_odps_list[step],
-         #                                                                              step_odps_list[step],step_odps_list[step]],
-         #                                                                             device=device)[None, :, None,
-         #                                                                              None],
-         #                                                                         grad_approx=grad_approx,
-         #                                                                         device=device)
-         #   PSNR_ODPS_autodiff[n_rec, :, t_prime, step] = PSNR_odps_autodiff[-1, :]
-         #   SSIM_ODPS_autodiff[n_rec, :, t_prime, step] = SSIM_odps_autodiff[-1, :]
+            x_odps_autodiff, PSNR_odps_autodiff, SSIM_odps_autodiff = ODPS_method(Mat, Spect, Measures, ODPS,
+                                                                                  x_scout=x_scout,
+                                                                                  t_prime=t_prime_list[t_prime],
+                                                                                  step=torch.tensor(
+                                                                                      [step_odps_list[step],
+                                                                                       step_odps_list[step],step_odps_list[step]],
+                                                                                      device=device)[None, :, None,
+                                                                                       None],
+                                                                                  grad_approx=grad_approx,
+                                                                                  device=device)
+            PSNR_ODPS_autodiff[n_rec, :, t_prime, step] = PSNR_odps_autodiff[-1, :]
+            SSIM_ODPS_autodiff[n_rec, :, t_prime, step] = SSIM_odps_autodiff[-1, :]
             #end = time.time()
            # print(f'time : {end - start}')
            # fig, ax = plt.subplots(1, 3, figsize=(15, 15))
@@ -208,25 +208,25 @@ for n_rec in range(n_recon):
           #                                     device)
           #  PSNR_OneStepLBFGS[n_rec, :, beta, gamma] = PSNR
           #  SSIM_OneStepLBFGS[n_rec, :, beta, gamma] = SSIM
-    for t_prime in range(len(t_prime_list)):
-        for beta in range(len(beta_ProjDomainDPS_list)):
-            for step in range(len(step_ProjDomainDPS_list)):
-                x_ProjDomainDPS, PSNR, SSIM = ProjectionDomainDPS_method(Mat, Spect, Measures, ODPS,
-                                                                         x_scout,
-                                                                        beta=beta_onestepLBFGS_list[beta],
-                                                                         t_prime=t_prime_list[t_prime],
-                                                                         step=torch.tensor(
-                                                                             [step_ProjDomainDPS_list[step],
-                                                                              step_ProjDomainDPS_list[step],step_ProjDomainDPS_list[step]],
-                                                                             device=device)[None, :, None, None],
-                                                                         device=device)
-                PSNR_ProjDomainDPS[n_rec, :, t_prime, beta, step] = PSNR[-1]
-                SSIM_ProjDomainDPS[n_rec, :, t_prime, beta, step] = SSIM[-1]
-                fig, ax = plt.subplots(1, Mat.n_mat, figsize=(15, 15))
-                for k in range(Mat.n_mat):
-                    ax[k].imshow(x_ProjDomainDPS[0, k].detach().cpu(), cmap='gray')
-                    ax[k].axis('off')
-                plt.show()
+  #  for t_prime in range(len(t_prime_list)):
+   #     for beta in range(len(beta_ProjDomainDPS_list)):
+     #       for step in range(len(step_ProjDomainDPS_list)):
+      #          x_ProjDomainDPS, PSNR, SSIM = ProjectionDomainDPS_method(Mat, Spect, Measures, ODPS,
+         #                                                                x_scout,
+         #                                                               beta=beta_onestepLBFGS_list[beta],
+          #                                                               t_prime=t_prime_list[t_prime],
+          #                                                               step=torch.tensor(
+            #                                                                 [step_ProjDomainDPS_list[step],
+            #                                                                  step_ProjDomainDPS_list[step],step_ProjDomainDPS_list[step]],
+             #                                                                device=device)[None, :, None, None],
+            #                                                             device=device)
+             #   PSNR_ProjDomainDPS[n_rec, :, t_prime, beta, step] = PSNR[-1]
+            #    SSIM_ProjDomainDPS[n_rec, :, t_prime, beta, step] = SSIM[-1]
+            #    fig, ax = plt.subplots(1, Mat.n_mat, figsize=(15, 15))
+             #   for k in range(Mat.n_mat):
+             #       ax[k].imshow(x_ProjDomainDPS[0, k].detach().cpu(), cmap='gray')
+             #       ax[k].axis('off')
+             #   plt.show()
 # Saves :
 
 np.save('HyperparametersSearch/t_prime_list.npy', np.asarray(t_prime_list))
@@ -257,5 +257,5 @@ np.save('HyperparametersSearch/SSIM_ODPS_autodiff', np.asarray(SSIM_ODPS_autodif
 #np.save('HyperparametersSearch/PSNR_OneStepLBFGS', np.asarray(PSNR_OneStepLBFGS))
 #np.save('HyperparametersSearch/SSIM_OneStepLBFGS', np.asarray(SSIM_OneStepLBFGS))
 
-np.save('HyperparametersSearch/PSNR_ProjDomainDPS', np.asarray(PSNR_ProjDomainDPS))
-np.save('HyperparametersSearch/SSIM_ProjDomainDPS', np.asarray(SSIM_ProjDomainDPS))
+#np.save('HyperparametersSearch/PSNR_ProjDomainDPS', np.asarray(PSNR_ProjDomainDPS))
+#np.save('HyperparametersSearch/SSIM_ProjDomainDPS', np.asarray(SSIM_ProjDomainDPS))
